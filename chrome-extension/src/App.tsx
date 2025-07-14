@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import "./index.css";
 
 type Message = {
@@ -9,15 +10,40 @@ type Message = {
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim() === "") return;
-    setMessages([
-      ...messages,
-      { text: input, sender: "user" },
-      { text: "This is a bot response.", sender: "bot" } // Example static reply
+
+    const userMessage = input.trim();
+    setMessages((prev) => [
+      ...prev,
+      { text: userMessage, sender: "user" }
     ]);
     setInput("");
+    setLoading(true);
+
+    try {
+      // Call your backend
+      const response = await axios.post("http://localhost:8000/chat/", {
+        message: userMessage,
+      });
+
+      const botReply = response.data.reply;
+
+      setMessages((prev) => [
+        ...prev,
+        { text: botReply, sender: "bot" }
+      ]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setMessages((prev) => [
+        ...prev,
+        { text: "Error: Failed to get response from server.", sender: "bot" }
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,12 +74,14 @@ export default function App() {
           className="flex-1 bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
+          placeholder={loading ? "Waiting for response..." : "Type your message..."}
+          disabled={loading}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
         <button
-          className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-sm transition"
+          className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-sm transition disabled:opacity-50"
           onClick={handleSend}
+          disabled={loading}
         >
           Send
         </button>
