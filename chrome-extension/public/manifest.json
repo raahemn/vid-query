@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Vid Query",
+  "version": "1.0",
+  "description": "A simple chat popup.",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}
