@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import chat
+from app.routes import analyze
 
 app = FastAPI(
     title="Vid Query Backend",
@@ -17,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(chat.router)
+app.include_router(analyze.router)
 
 @app.get("/")
 async def read_root():

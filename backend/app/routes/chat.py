@@ -11,5 +11,6 @@ router = APIRouter(
 
 @router.post("/", response_model=ChatResponse)
 async def chat_endpoint(payload: ChatRequest):
+    print("Payload received:", payload)
     reply = get_rag_response(payload.message)
     return {"reply": reply}
