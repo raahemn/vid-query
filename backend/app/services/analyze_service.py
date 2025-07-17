@@ -43,11 +43,13 @@ async def analyze_youtube_video(video_id: str) -> str:
     # )  # For testing, replace with actual fetch
     
     if not transcript:
-        return "❌ Could not fetch transcript."
+        return "Could not fetch transcript."
 
     chunks = splitter.create_documents([transcript])
     if not chunks:
-        return "❌ Transcript is empty or could not be processed."
+        return "Transcript is empty or could not be processed."
+    
+    print(f"Processed {len(chunks)} chunks from transcript.")
 
     vectorstore = FAISS.from_documents(chunks, embedder)
 
