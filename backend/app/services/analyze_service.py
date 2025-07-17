@@ -15,6 +15,7 @@ embedder = HFInferenceEmbeddings(
     token=HF_TOKEN
 )
 
+
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
 # Will store this globally or in a cache/db later

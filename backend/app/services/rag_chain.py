@@ -2,9 +2,19 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain_community.llms import Ollama
 from langchain.vectorstores import FAISS
+from app.services.llm_service import HFChatModel
+from dotenv import load_dotenv
+import os 
 
-# Set up the LLM
-llm = Ollama(model="tinyllama")
+# Load environment variables from .env file
+load_dotenv()
+
+llm = HFChatModel(
+    model="mistralai/Mistral-7B-Instruct-v0.3",
+    provider="together",
+    token=os.environ["HF_TOKEN"]
+)
+
 
 # Define your RAG prompt
 rag_prompt = PromptTemplate.from_template("""
