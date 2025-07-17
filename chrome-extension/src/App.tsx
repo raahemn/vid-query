@@ -24,13 +24,13 @@ const [videoId, setVideoId] = useState<string | null>(null);
 
         console.log("Video id set in state:", videoId);
 
-        if (!videoId) {
+        if (!id) {
           alert("Could not extract video ID.");
           return;
         }
 
         const response = await axios.post("http://localhost:8000/analyze", {
-          video_id: videoId,
+          video_id: id,
         });
 
         setInitialBotMessage(response.data.reply);
