@@ -11,15 +11,32 @@ export default function ChatInterface({ initialBotMessage }: { initialBotMessage
   );
   const [input, setInput] = useState("");
 
-  const handleSend = () => {
-    if (input.trim() === "") return;
-    setMessages([
-      ...messages,
-      { text: input, sender: "user" },
-      { text: "This is a placeholder bot response.", sender: "bot" },
-    ]);
-    setInput("");
-  };
+  const handleSend = async () => {
+  if (input.trim() === "") return;
+
+  const userMessage = input;
+  setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
+  setInput("");
+
+  try {
+    const response = await fetch("http://localhost:8000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: userMessage,
+      }),
+    });
+
+    const data = await response.json();
+    setMessages((prev) => [...prev, { text: data.reply, sender: "bot" }]);
+  } catch (error) {
+    console.error("Error:", error);
+    setMessages((prev) => [...prev, { text: "Error getting response from server.", sender: "bot" }]);
+  }
+};
+
 
   return (
     <div className="flex flex-col h-full">
