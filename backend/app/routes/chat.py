@@ -12,8 +12,7 @@ router = APIRouter(
 
 @router.post("/", response_model=ChatResponse)
 async def chat_endpoint(payload: ChatRequest):
-    print("Payload received:", payload)
-    video_id = "video_id"  # Assuming video_id is part of the payload
-    reply = get_rag_response(payload.message, video_vectorstores.get(video_id))
+    print("Payload received in chat endpoint:", payload)
+    reply = get_rag_response(payload.message, video_vectorstores.get(payload.video_id))
     print("Reply generated:", reply)
     return {"reply": reply}

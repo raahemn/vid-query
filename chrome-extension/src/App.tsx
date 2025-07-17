@@ -5,6 +5,7 @@ import axios from "axios";
 export default function App() {
   const [chatStarted, setChatStarted] = useState(false);
   const [initialBotMessage, setInitialBotMessage] = useState<string | null>(null);
+const [videoId, setVideoId] = useState<string | null>(null);
 
   const handleAnalyzeClick = async () => {
     try {
@@ -17,7 +18,11 @@ export default function App() {
         }
 
         const urlObj = new URL(url);
-        const videoId = urlObj.searchParams.get("v");
+        const id = urlObj.searchParams.get("v");
+        console.log("Extracted video ID:", id);
+         setVideoId(id);
+
+        console.log("Video id set in state:", videoId);
 
         if (!videoId) {
           alert("Could not extract video ID.");
@@ -25,7 +30,7 @@ export default function App() {
         }
 
         const response = await axios.post("http://localhost:8000/analyze", {
-          message: videoId,
+          video_id: videoId,
         });
 
         setInitialBotMessage(response.data.reply);
@@ -40,7 +45,7 @@ export default function App() {
   return (
     <div className="h-[500px] w-[300px] bg-zinc-900 text-white p-4">
       {chatStarted ? (
-        <ChatInterface initialBotMessage={initialBotMessage} />
+        <ChatInterface initialBotMessage={initialBotMessage} videoId={videoId} />
       ) : (
         <div className="flex flex-col items-center justify-center h-full space-y-4">
           <h2 className="text-lg font-semibold">AI Video Analyzer</h2>

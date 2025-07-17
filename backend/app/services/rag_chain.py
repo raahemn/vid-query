@@ -1,6 +1,5 @@
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from langchain_community.llms import Ollama
 from langchain.vectorstores import FAISS
 from app.services.llm_service import HFChatModel
 from dotenv import load_dotenv

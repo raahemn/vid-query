@@ -5,7 +5,7 @@ type Message = {
   sender: "user" | "bot";
 };
 
-export default function ChatInterface({ initialBotMessage }: { initialBotMessage: string | null }) {
+export default function ChatInterface({ initialBotMessage, videoId }: { initialBotMessage: string | null, videoId: string | null }) {
   const [messages, setMessages] = useState<Message[]>(
     initialBotMessage ? [{ text: initialBotMessage, sender: "bot" }] : []
   );
@@ -26,6 +26,7 @@ export default function ChatInterface({ initialBotMessage }: { initialBotMessage
       },
       body: JSON.stringify({
         message: userMessage,
+        video_id: videoId || "",
       }),
     });
 

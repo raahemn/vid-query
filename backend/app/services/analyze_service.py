@@ -15,13 +15,15 @@ embedder = HFInferenceEmbeddings(
     token=HF_TOKEN
 )
 
-
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
 # Will store this globally or in a cache/db later
 video_vectorstores: dict[str, FAISS] = {}
 
 async def analyze_youtube_video(video_id: str) -> str:
+    if video_id in video_vectorstores:
+        return f"Your video {video_id} has already been processed."
+    
     # transcript = fetch_youtube_transcript(video_id)
     transcript = (
         "Max Taylor: Real quick, Max Taylor of Sports Direct here talking to Jamal Hadid. Let’s discuss your strong finish this afternoon, man. Congratulations, Jamal.\n"
@@ -50,6 +52,6 @@ async def analyze_youtube_video(video_id: str) -> str:
     vectorstore = FAISS.from_documents(chunks, embedder)
 
     # Store in global dict (or replace with Redis / local file later)
-    video_vectorstores['video_id'] = vectorstore
+    video_vectorstores[video_id] = vectorstore
 
-    return f"✅ Video {video_id} processed and vector store initialized."
+    return f"Your video {video_id} has been processed and the vector store has been initialized!"
