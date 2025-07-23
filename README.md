@@ -7,8 +7,8 @@ We believe that this extension will be incredibly useful for users who rely on Y
 
 ### Chrome Extension (Frontend) Setup:
 - Navigate to the chrome-extension folder and run the following commands
-    - npm i
-    - npm run build
+    - `npm i`
+    - `npm run build`
 - Open Google Chrome and navigate to:
     chrome://extensions/
 - Toggle on Developer mode on the top right corner of the screen if toggled off 
