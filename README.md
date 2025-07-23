@@ -8,6 +8,7 @@ We believe that this extension will be incredibly useful for users who rely on Y
 ### Chrome Extension (Frontend) Setup:
 - Navigate to the chrome-extension folder and run the following commands
     npm i
+    
     npm run build
 - Open Google Chrome and navigate to:
     chrome://extensions/
@@ -20,10 +21,13 @@ We believe that this extension will be incredibly useful for users who rely on Y
     - Click on the Reload arrow in the vid-query Chrome extension card
 
 ### Backend Setup:
+#### uv Installation
+##### MacOs and Linux
+`curl -LsSf https://astral.sh/uv/install.sh | less`
+##### Windows
+`powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
 - Navigate to the backend folder and run the following commands:
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+    uv sync
 (Note: to do the above you must have Python installed which you can verify by running 'python3 --version')
 - Add the .env file with your secrets configured according to the template in the .env.example file in the backend directory.
 - Run the following command to start the server with hot reload (convenient for development):
