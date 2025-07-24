@@ -24,7 +24,9 @@ async def chat_endpoint(payload: ChatRequest, background_tasks: BackgroundTasks)
 
     question = payload.message
     vectorstore = video_vectorstores.get(payload.video_id)
-    reply = get_rag_response(payload.message, vectorstore)
+    chat_history = payload.chat_history
+    
+    reply = get_rag_response(payload.message, vectorstore, chat_history=chat_history)
     
     print("Reply generated:", reply)
 

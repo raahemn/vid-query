@@ -16,7 +16,7 @@ llm = HFChatModel(
     token=os.environ["HF_TOKEN"]
 )
 
-memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True, input_key="question", k=3)
+# memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True, input_key="question", k=3)
 
 # Define your RAG prompt
 rag_prompt = PromptTemplate.from_template("""
@@ -35,9 +35,9 @@ Answer in a professional and concise manner, ensuring that the response is direc
 """)
 
 # Chain that combines prompt + LLM
-qa_chain = LLMChain(llm=llm, prompt=rag_prompt, memory=memory)
+qa_chain = LLMChain(llm=llm, prompt=rag_prompt)
 
-def get_rag_response(question: str, vectorstore: FAISS, k: int = 3) -> str:
+def get_rag_response(question: str, vectorstore: FAISS, k: int = 3, chat_history: list[dict] = []) -> str:
     with trace("RAGPipeline", inputs={"question": question}) as span:
 
         if not vectorstore:
@@ -51,11 +51,16 @@ def get_rag_response(question: str, vectorstore: FAISS, k: int = 3) -> str:
         # Log the retrieved documents for tracing
         span.add_outputs({"retrieved_docs": [doc.page_content for doc in docs]})
         
+        formatted_history = ""
+        for msg in chat_history[-6:]:  # Limit to last 3 user+bot pairs
+            role = "Human" if msg["sender"] == "user" else "AI"
+            formatted_history += f"{role}: {msg['text']}\n"
+        
         print("Context retrieved:", context)
         print("Question asked:", question)
 
         # Ask LLM with context
-        result = qa_chain.invoke({"context": context, "question": question})
+        result = qa_chain.invoke({"context": context, "question": question, "chat_history": formatted_history})
 
         # Log the final answer for tracing
         span.add_outputs({"answer": result["text"]})

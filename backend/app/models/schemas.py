@@ -3,6 +3,7 @@ from pydantic import BaseModel
 class ChatRequest(BaseModel):
     message: str
     video_id: str = None  
+    chat_history: list[dict] = []  # Optional chat history for context
 
 class ChatResponse(BaseModel):
     reply: str

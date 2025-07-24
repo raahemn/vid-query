@@ -16,8 +16,21 @@ export default function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+  const storedMessages = localStorage.getItem("chat_messages");
+  if (storedMessages) {
+    setMessages(JSON.parse(storedMessages));
+  }
+}, []);
+
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+  localStorage.setItem("chat_messages", JSON.stringify(messages));
+}, [messages]);
+
 
   const handleSend = async () => {
     if (input.trim() === "") return;
@@ -35,6 +48,7 @@ export default function ChatInterface({
         body: JSON.stringify({
           message: userMessage,
           video_id: videoId || "",
+          chat_history: messages
         }),
       });
 
