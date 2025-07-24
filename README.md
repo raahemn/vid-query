@@ -27,7 +27,7 @@ We believe that this extension will be incredibly useful for users who rely on Y
 `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
 - Navigate to the backend folder and run the following commands:
     - `uv sync`
-(Note: to do the above you must have Python installed which you can verify by running 'python3 --version')
+(Note: to do the above you must have Python installed which you can verify by running `python3 --version`)
 - Add the .env file with your secrets configured according to the template in the .env.example file in the backend directory.
 - Run the following command to start the server with hot reload (convenient for development):
-    uvicorn app.main:app --reload
+    - `uv run uvicorn app.main:app --reload`
