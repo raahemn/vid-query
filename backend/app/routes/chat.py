@@ -24,8 +24,7 @@ async def chat_endpoint(payload: ChatRequest, background_tasks: BackgroundTasks)
 
     question = payload.message
     vectorstore = video_vectorstores.get(payload.video_id)
-    # reply = get_rag_response(payload.message, vectorstore)
-    reply = "Expensive"
+    reply = get_rag_response(payload.message, vectorstore)
     
     print("Reply generated:", reply)
 
