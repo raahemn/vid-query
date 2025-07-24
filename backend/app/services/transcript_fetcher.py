@@ -12,7 +12,9 @@ def fetch_youtube_transcript(
     Returns the full text as a single string, or None if unavailable.
     """
     try:
-        transcripts = YouTubeTranscriptApi.list_transcripts(video_id)
+        # transcripts = YouTubeTranscriptApi.list_transcripts(video_id)
+        api = YouTubeTranscriptApi()
+        transcripts = api.list(video_id)
 
         try:
             # Try to find a transcript in a preferred language
