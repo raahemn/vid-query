@@ -3,6 +3,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.outputs import ChatResult, ChatGeneration
 from huggingface_hub import InferenceClient
 from pydantic import PrivateAttr
+from langchain_core.output_parsers import PydanticOutputParser
 
 class HFChatModel(BaseChatModel):
     model: str
