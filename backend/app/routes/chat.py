@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Find out if we need to evaluate RAG responses using LangSmith, LangChain, or none
-EVALUATE_RAG = os.getenv("EVALUATE_RAG").lower() or "none"
+EVALUATE_RAG = os.getenv("EVALUATE_RAG", "none").lower()
 os.makedirs("../evaluations", exist_ok=True)
 
 
