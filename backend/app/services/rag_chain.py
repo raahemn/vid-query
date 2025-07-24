@@ -1,6 +1,7 @@
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.vectorstores import FAISS
+from langchain.memory import ConversationBufferWindowMemory
 from app.services.llm_service import HFChatModel
 from langsmith import trace
 from dotenv import load_dotenv
@@ -15,10 +16,14 @@ llm = HFChatModel(
     token=os.environ["HF_TOKEN"]
 )
 
+memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True, input_key="question", k=3)
 
 # Define your RAG prompt
 rag_prompt = PromptTemplate.from_template("""
 You are a helpful assistant. Use the context below to answer the user's question.
+
+Chat History:
+{chat_history}
 
 Context:
 {context}
@@ -26,11 +31,11 @@ Context:
 Question:
 {question}
 
-Answer in a professional tone.
+Answer in a professional and concise manner, ensuring that the response is directly relevant to the question asked.
 """)
 
 # Chain that combines prompt + LLM
-qa_chain = LLMChain(llm=llm, prompt=rag_prompt)
+qa_chain = LLMChain(llm=llm, prompt=rag_prompt, memory=memory)
 
 def get_rag_response(question: str, vectorstore: FAISS, k: int = 3) -> str:
     with trace("RAGPipeline", inputs={"question": question}) as span:
