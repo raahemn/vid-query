@@ -2,6 +2,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.vectorstores import FAISS
 from app.services.llm_service import HFChatModel
+from langsmith import trace
 from dotenv import load_dotenv
 import os 
 
@@ -32,18 +33,26 @@ Answer in a professional tone.
 qa_chain = LLMChain(llm=llm, prompt=rag_prompt)
 
 def get_rag_response(question: str, vectorstore: FAISS, k: int = 3) -> str:
-    
-    if not vectorstore:
-        # result = qa_chain.invoke({"context": "There's no video content available but answer any generic questions.", "question": question})   # Can later allow general chats with LLM
-        return "No video content available. Please analyze a video first."
-    
-    # Retrieve top k relevant chunks
-    docs = vectorstore.similarity_search(question, k=k)
-    context = "\n\n".join(doc.page_content for doc in docs)
-    
-    print("Context retrieved:", context)
-    print("Question asked:", question)
+    with trace("RAGPipeline", inputs={"question": question}) as span:
 
-    # Ask LLM with context
-    result = qa_chain.invoke({"context": context, "question": question})
-    return result["text"]
+        if not vectorstore:
+            # result = qa_chain.invoke({"context": "There's no video content available but answer any generic questions.", "question": question})   # Can later allow general chats with LLM
+            return "No video content available. Please analyze a video first."
+        
+        # Retrieve top k relevant chunks
+        docs = vectorstore.similarity_search(question, k=k)
+        context = "\n\n".join(doc.page_content for doc in docs)
+
+        # Log the retrieved documents for tracing
+        span.add_outputs({"retrieved_docs": [doc.page_content for doc in docs]})
+        
+        print("Context retrieved:", context)
+        print("Question asked:", question)
+
+        # Ask LLM with context
+        result = qa_chain.invoke({"context": context, "question": question})
+
+        # Log the final answer for tracing
+        span.add_outputs({"answer": result["text"]})
+
+        return result["text"]
