@@ -34,7 +34,6 @@ async def analyze_youtube_video(video_id: str) -> str:
         video_vectorstores[video_id] = vectorstore
         return f"Your video {video_id} has been loaded from the existing vectorstore."
     
-    
     transcript = fetch_youtube_transcript(video_id)
     
     if not transcript:

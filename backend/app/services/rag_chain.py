@@ -1,7 +1,6 @@
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.vectorstores import FAISS
-from langchain.memory import ConversationBufferWindowMemory
 from app.services.llm_service import HFChatModel
 from langsmith import trace
 from dotenv import load_dotenv
@@ -16,11 +15,10 @@ llm = HFChatModel(
     token=os.environ["HF_TOKEN"]
 )
 
-# memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True, input_key="question", k=3)
-
 # Define your RAG prompt
 rag_prompt = PromptTemplate.from_template("""
-You are a helpful assistant. Use the context below to answer the user's question.
+You are a YouTube video assistant. You will receive the user's query about the video as well as the context from the video's transcript and part of the chat history. 
+Use the context to answer the user's question. 
 
 Chat History:
 {chat_history}
@@ -32,6 +30,7 @@ Question:
 {question}
 
 Answer in a professional and concise manner, ensuring that the response is directly relevant to the question asked.
+If the question has an ambiguity not addressed by the context, refer to the chat history or ask for clarification.
 """)
 
 # Chain that combines prompt + LLM

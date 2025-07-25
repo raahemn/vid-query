@@ -21,8 +21,11 @@ We believe that this extension will be incredibly useful for users who rely on Y
 
 ### Backend Setup:
 #### uv Installation
-##### MacOs and Linux
+##### MacOS and Linux
 `curl -LsSf https://astral.sh/uv/install.sh | sh`
+    OR 
+`brew install astral-sh/uv/uv`
+
 ##### Windows
 `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
 - Navigate to the backend folder and run the following commands:
