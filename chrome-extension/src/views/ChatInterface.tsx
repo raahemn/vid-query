@@ -6,30 +6,27 @@ type Message = {
 };
 
 export default function ChatInterface({
-  initialBotMessage,
+  messages,
   videoId,
-}: { initialBotMessage: string | null; videoId: string | null }) {
-  const [messages, setMessages] = useState<Message[]>(
-    initialBotMessage ? [{ text: initialBotMessage, sender: "bot" }] : []
-  );
+  setMessages,
+}: {
+  messages: Message[];
+  videoId: string | null;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-  const storedMessages = localStorage.getItem("chat_messages");
-  if (storedMessages) {
-    setMessages(JSON.parse(storedMessages));
-  }
-}, []);
-
+    const storedMessages = localStorage.getItem("chat_messages");
+    if (storedMessages) {
+      setMessages(JSON.parse(storedMessages));
+    }
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  useEffect(() => {
-  localStorage.setItem("chat_messages", JSON.stringify(messages));
-}, [messages]);
 
 
   const handleSend = async () => {
@@ -48,7 +45,8 @@ export default function ChatInterface({
         body: JSON.stringify({
           message: userMessage,
           video_id: videoId || "",
-          chat_history: messages
+          //send last 4 messages (2 back and forths between user and bot) but not the last one
+          chat_history: messages.slice(-5, -1), 
         }),
       });
 
@@ -71,9 +69,11 @@ export default function ChatInterface({
             key={idx}
             className={`
               max-w-[80%] rounded-lg px-3 py-2
-              ${msg.sender === "user"
-                ? "bg-blue-600 text-white self-end"
-                : "bg-gray-700 text-white self-start"}
+              ${
+                msg.sender === "user"
+                  ? "bg-blue-600 text-white self-end"
+                  : "bg-gray-700 text-white self-start"
+              }
             `}
           >
             {msg.text}
