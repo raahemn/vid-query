@@ -18,13 +18,6 @@ export default function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const storedMessages = localStorage.getItem("chat_messages");
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages));
-    }
-  }, []);
-
-  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
