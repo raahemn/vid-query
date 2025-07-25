@@ -46,7 +46,7 @@ export default function ChatInterface({
           message: userMessage,
           video_id: videoId || "",
           //send last 4 messages (2 back and forths between user and bot) but not the last one
-          chat_history: messages.slice(-5, -1), 
+          chat_history: messages.slice(-4), 
         }),
       });
 
